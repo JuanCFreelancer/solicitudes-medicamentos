@@ -1,7 +1,7 @@
 package com.pruebatecnica.solicitudes.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -19,12 +19,16 @@ import com.pruebatecnica.solicitudes.dto.SolicitudResponse;
 import com.pruebatecnica.solicitudes.exception.GlobalExceptionHandler;
 import com.pruebatecnica.solicitudes.exception.MedicamentoNoDisponibleException;
 import com.pruebatecnica.solicitudes.exception.RequestValidationException;
+import com.pruebatecnica.solicitudes.notification.EstadoNotificacion;
+import com.pruebatecnica.solicitudes.service.AuthenticatedUser;
 import com.pruebatecnica.solicitudes.service.MedicamentoService;
+import com.pruebatecnica.solicitudes.service.RadicacionService;
 import com.pruebatecnica.solicitudes.service.SolicitudService;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -48,12 +52,14 @@ class SolicitudControllerTest {
     @MockitoBean
     private SolicitudService solicitudService;
     @MockitoBean
+    private RadicacionService radicacionService;
+    @MockitoBean
     private MedicamentoService medicamentoService;
     @MockitoBean
     private JwtDecoder jwtDecoder; // el filtro real lo necesita; jwt() de spring-security-test simula el token ya validado
 
     private static RequestPostProcessor usuario(long id) {
-        return jwt().jwt(token -> token.subject(String.valueOf(id)));
+        return jwt().jwt(token -> token.subject(String.valueOf(id)).claim("email", "ana@correo.com").claim("nombre", "Ana"));
     }
 
     @Test
@@ -71,15 +77,34 @@ class SolicitudControllerTest {
     @Test
     void crear_usaElIdDelTokenComoUsuario() throws Exception {
         SolicitudResponse creada = new SolicitudResponse(10L, new MedicamentoResponse(1L, "Acetaminofén", true),
-                null, null, null, null, Instant.parse("2026-01-01T10:00:00Z"));
-        when(solicitudService.crear(eq(42L), any())).thenReturn(creada);
+                null, null, null, null, Instant.parse("2026-01-01T10:00:00Z"), EstadoNotificacion.ENVIADA);
+        when(radicacionService.radicar(any(), any())).thenReturn(creada);
 
         mockMvc.perform(post("/solicitudes").with(usuario(42)).contentType(MediaType.APPLICATION_JSON).content(BODY_POS))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(10))
-                .andExpect(jsonPath("$.medicamento.esPos").value(true));
+                .andExpect(jsonPath("$.medicamento.esPos").value(true))
+                .andExpect(jsonPath("$.notificacion").value("ENVIADA"));
 
-        verify(solicitudService).crear(eq(42L), any());
+        // la identidad viaja completa hacia el proceso: id, nombre, correo y token para propagarlo
+        ArgumentCaptor<AuthenticatedUser> user = ArgumentCaptor.forClass(AuthenticatedUser.class);
+        verify(radicacionService).radicar(user.capture(), any());
+        assertThat(user.getValue().id()).isEqualTo(42L);
+        assertThat(user.getValue().email()).isEqualTo("ana@correo.com");
+        assertThat(user.getValue().nombre()).isEqualTo("Ana");
+        assertThat(user.getValue().bearerToken()).isNotBlank();
+    }
+
+    @Test
+    void crear_sinEstadoDeNotificacion_omiteElCampoDelJson() throws Exception {
+        when(radicacionService.radicar(any(), any())).thenReturn(new SolicitudResponse(11L,
+                new MedicamentoResponse(1L, "Acetaminofén", true), null, null, null, null,
+                Instant.parse("2026-01-01T10:00:00Z"), null));
+
+        mockMvc.perform(post("/solicitudes").with(usuario(1)).contentType(MediaType.APPLICATION_JSON).content(BODY_POS))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.notificacion").doesNotExist())
+                .andExpect(jsonPath("$.numeroOrden").value(org.hamcrest.Matchers.nullValue()));
     }
 
     @Test
@@ -101,7 +126,7 @@ class SolicitudControllerTest {
 
     @Test
     void crear_noPosSinCampos_devuelve400ConDetalle() throws Exception {
-        when(solicitudService.crear(any(), any())).thenThrow(new RequestValidationException(Map.of(
+        when(radicacionService.radicar(any(), any())).thenThrow(new RequestValidationException(Map.of(
                 "numeroOrden", "El número de orden es obligatorio para medicamentos NO POS")));
 
         mockMvc.perform(post("/solicitudes").with(usuario(1)).contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +138,7 @@ class SolicitudControllerTest {
 
     @Test
     void crear_medicamentoNoDisponible_devuelve422() throws Exception {
-        when(solicitudService.crear(any(), any())).thenThrow(new MedicamentoNoDisponibleException(99L));
+        when(radicacionService.radicar(any(), any())).thenThrow(new MedicamentoNoDisponibleException(99L));
 
         mockMvc.perform(post("/solicitudes").with(usuario(1)).contentType(MediaType.APPLICATION_JSON)
                         .content("""

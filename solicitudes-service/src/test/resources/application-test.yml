@@ -6,3 +6,7 @@ app:
   pagination:
     default-size: 10
     max-size: 50
+  notifications:
+    enabled: true
+    base-url: http://localhost:8083
+    timeout: 2s
