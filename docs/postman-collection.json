@@ -1,0 +1,106 @@
+{
+  "info": {
+    "name": "Solicitudes de Medicamentos",
+    "description": "Ejecutar en orden: Registro -> Login (guarda el token en la variable {{token}}) -> resto.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "authUrl", "value": "http://localhost:8081" },
+    { "key": "solicitudesUrl", "value": "http://localhost:8082" },
+    { "key": "email", "value": "ana@correo.com" },
+    { "key": "password", "value": "Clave12345" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{authUrl}}/auth/register",
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Ana Pérez\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('token', pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{authUrl}}/auth/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Solicitudes",
+      "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+      "item": [
+        {
+          "name": "Listar medicamentos",
+          "request": { "method": "GET", "url": "{{solicitudesUrl}}/medicamentos" }
+        },
+        {
+          "name": "Crear solicitud (medicamento POS)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{solicitudesUrl}}/solicitudes",
+            "body": { "mode": "raw", "raw": "{\n  \"medicamentoId\": 1\n}" }
+          }
+        },
+        {
+          "name": "Crear solicitud (NO POS, completa)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{solicitudesUrl}}/solicitudes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medicamentoId\": 6,\n  \"numeroOrden\": \"ORD-2026-001\",\n  \"direccion\": \"Calle 10 # 20-30, Bogotá\",\n  \"telefono\": \"3001234567\",\n  \"correoContacto\": \"ana@correo.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear solicitud (NO POS, incompleta -> 400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{solicitudesUrl}}/solicitudes",
+            "body": { "mode": "raw", "raw": "{\n  \"medicamentoId\": 6\n}" }
+          }
+        },
+        {
+          "name": "Listar solicitudes (paginado)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{solicitudesUrl}}/solicitudes?page=0&size=10",
+              "host": ["{{solicitudesUrl}}"],
+              "path": ["solicitudes"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
