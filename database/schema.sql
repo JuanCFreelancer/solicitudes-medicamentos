@@ -5,10 +5,12 @@
 --  Dos esquemas, uno por servicio:
 --    auth         -> propiedad del auth-service         (usuarios)
 --    solicitudes  -> propiedad del solicitudes-service  (medicamentos, solicitudes)
+--    notificaciones -> propiedad del notificaciones-service (notificaciones)
 -- =====================================================================
 
 CREATE SCHEMA IF NOT EXISTS auth;
 CREATE SCHEMA IF NOT EXISTS solicitudes;
+CREATE SCHEMA IF NOT EXISTS notificaciones;
 
 -- ---------------------------------------------------------------------
 -- auth.usuarios
@@ -67,3 +69,26 @@ CREATE INDEX ix_solicitudes_usuario_fecha
     ON solicitudes.solicitudes (usuario_id, created_at DESC, id DESC);
 CREATE INDEX ix_solicitudes_medicamento
     ON solicitudes.solicitudes (medicamento_id);
+
+-- ---------------------------------------------------------------------
+-- notificaciones.notificaciones
+-- Servicio fino y reutilizable: no conoce solicitudes ni medicamentos.
+-- usuario_id y referencia son referencias LÓGICAS (sin FK): cada servicio es
+-- dueño de sus datos y puede tener su propia BD sin cambiar el código.
+-- ---------------------------------------------------------------------
+CREATE TABLE notificaciones.notificaciones (
+    id            BIGINT        GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    usuario_id    BIGINT        NOT NULL,
+    destinatario  VARCHAR(254)  NOT NULL,
+    asunto        VARCHAR(150)  NOT NULL,
+    mensaje       VARCHAR(1000) NOT NULL,
+    canal         VARCHAR(20)   NOT NULL,
+    estado        VARCHAR(20)   NOT NULL,
+    referencia    VARCHAR(100),
+    created_at    TIMESTAMPTZ   NOT NULL DEFAULT now(),
+    CONSTRAINT ck_notificaciones_canal  CHECK (canal IN ('EMAIL')),
+    CONSTRAINT ck_notificaciones_estado CHECK (estado IN ('ENVIADA', 'FALLIDA'))
+);
+
+CREATE INDEX ix_notificaciones_usuario_fecha
+    ON notificaciones.notificaciones (usuario_id, created_at DESC, id DESC);
