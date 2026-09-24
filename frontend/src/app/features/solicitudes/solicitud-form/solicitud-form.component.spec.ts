@@ -154,6 +154,38 @@ describe('SolicitudFormComponent (formulario condicional NO POS)', () => {
     expect(root().querySelector('.alert-success')?.textContent).toContain('Solicitud #77');
   });
 
+  it('confirma que se envió el correo cuando la notificación fue ENVIADA', () => {
+    solicitudService.create.and.returnValue(of({ ...CREADA, notificacion: 'ENVIADA' }));
+    selectMedicamento(1);
+
+    submit();
+
+    const alert = root().querySelector('.alert-success')?.textContent;
+    expect(alert).toContain('Solicitud #77');
+    expect(alert).toContain('Te enviamos una confirmación por correo');
+  });
+
+  it('si el servicio de notificaciones no responde, la solicitud sigue siendo un éxito y se avisa del correo', () => {
+    solicitudService.create.and.returnValue(of({ ...CREADA, notificacion: 'NO_DISPONIBLE' }));
+    selectMedicamento(1);
+
+    submit();
+
+    expect(root().querySelector('.alert-error')).toBeNull(); // no se presenta como error
+    const alert = root().querySelector('.alert-success')?.textContent;
+    expect(alert).toContain('Solicitud #77');
+    expect(alert).toContain('No pudimos enviarte el correo de confirmación');
+  });
+
+  it('no dice nada del correo si la respuesta no trae el campo (contrato anterior)', () => {
+    solicitudService.create.and.returnValue(of(CREADA));
+    selectMedicamento(1);
+
+    submit();
+
+    expect(root().querySelector('.alert-success')?.textContent).not.toContain('correo');
+  });
+
   it('sin medicamento seleccionado no envía y avisa que es obligatorio', () => {
     submit();
 

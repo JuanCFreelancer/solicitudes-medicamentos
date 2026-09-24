@@ -3,7 +3,20 @@
 
   @if (created(); as solicitud) {
     <app-alert type="success">
-      Solicitud #{{ solicitud.id }} registrada para <strong>{{ solicitud.medicamento.nombre }}</strong>.
+      <span>
+        Solicitud #{{ solicitud.id }} registrada para <strong>{{ solicitud.medicamento.nombre }}</strong>.
+        @switch (solicitud.notificacion) {
+          @case ('ENVIADA') {
+            Te enviamos una confirmación por correo.
+          }
+          @case ('FALLIDA') {
+            No pudimos enviarte el correo de confirmación, pero tu solicitud quedó registrada.
+          }
+          @case ('NO_DISPONIBLE') {
+            No pudimos enviarte el correo de confirmación en este momento, pero tu solicitud quedó registrada.
+          }
+        }
+      </span>
       <a routerLink="/solicitudes">Ver mis solicitudes</a>
     </app-alert>
   }
