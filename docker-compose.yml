@@ -43,9 +43,31 @@ services:
       retries: 12
       start_period: 20s
 
+  notificaciones-service:
+    build: ./notificaciones-service
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8083:8083"     # solo para la demo; en producción sería un servicio interno sin puerto publicado
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8083/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
   solicitudes-service:
     build: ./solicitudes-service
     environment:
+      NOTIFICATIONS_BASE_URL: http://notificaciones-service:8083
+      NOTIFICATIONS_ENABLED: ${NOTIFICATIONS_ENABLED:-true}
+      NOTIFICATIONS_TIMEOUT: ${NOTIFICATIONS_TIMEOUT:-2s}
       DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [auth-service, solicitudes-service]
+        service: [auth-service, solicitudes-service, notificaciones-service]
     defaults:
       run:
         working-directory: ${{ matrix.service }}
@@ -58,6 +58,8 @@ jobs:
         run: docker compose up -d --build --wait --wait-timeout 240
       - name: Prueba de humo
         run: ./scripts/smoke-test.sh
+      - name: Prueba de resiliencia (notificaciones caído)
+        run: ./scripts/resilience-test.sh
       - name: Logs si falla
         if: failure()
         run: docker compose logs --no-color
