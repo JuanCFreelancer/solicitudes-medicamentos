@@ -1,0 +1,86 @@
+<section class="card">
+  <h1>Nueva solicitud de medicamento</h1>
+
+  @if (created(); as solicitud) {
+    <app-alert type="success">
+      Solicitud #{{ solicitud.id }} registrada para <strong>{{ solicitud.medicamento.nombre }}</strong>.
+      <a routerLink="/solicitudes">Ver mis solicitudes</a>
+    </app-alert>
+  }
+  @if (catalogError(); as message) {
+    <app-alert type="error">
+      {{ message }}
+      <button type="button" class="btn btn-secondary btn-sm" (click)="loadCatalog()">Reintentar</button>
+    </app-alert>
+  }
+  @if (serverError(); as message) {
+    <app-alert type="error">{{ message }}</app-alert>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="form-field">
+      <label for="medicamentoId">Medicamento <span aria-hidden="true">*</span></label>
+      <select id="medicamentoId" formControlName="medicamentoId"
+              [attr.aria-invalid]="form.controls.medicamentoId.touched && form.controls.medicamentoId.invalid"
+              aria-describedby="medicamento-error">
+        <option [ngValue]="null" disabled>
+          {{ loadingCatalog() ? 'Cargando medicamentos…' : 'Selecciona un medicamento' }}
+        </option>
+        @for (medicamento of medicamentos(); track medicamento.id) {
+          <option [ngValue]="medicamento.id">
+            {{ medicamento.nombre }}{{ medicamento.esPos ? '' : ' (NO POS)' }}
+          </option>
+        }
+      </select>
+      <app-field-error [control]="form.controls.medicamentoId" id="medicamento-error" />
+    </div>
+
+    @if (isNoPos()) {
+      <fieldset class="fieldset-no-pos">
+        <legend>Datos adicionales — medicamento NO POS</legend>
+        <p class="field-hint">Todos los campos de esta sección son obligatorios.</p>
+
+        <div class="form-field">
+          <label for="numeroOrden">Número de orden <span aria-hidden="true">*</span></label>
+          <input id="numeroOrden" type="text" formControlName="numeroOrden" autocomplete="off"
+                 [attr.aria-invalid]="form.controls.numeroOrden.touched && form.controls.numeroOrden.invalid"
+                 aria-describedby="numeroOrden-error" />
+          <app-field-error [control]="form.controls.numeroOrden" id="numeroOrden-error" />
+        </div>
+
+        <div class="form-field">
+          <label for="direccion">Dirección <span aria-hidden="true">*</span></label>
+          <input id="direccion" type="text" formControlName="direccion" autocomplete="street-address"
+                 [attr.aria-invalid]="form.controls.direccion.touched && form.controls.direccion.invalid"
+                 aria-describedby="direccion-error" />
+          <app-field-error [control]="form.controls.direccion" id="direccion-error" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="telefono">Teléfono <span aria-hidden="true">*</span></label>
+            <input id="telefono" type="tel" formControlName="telefono" autocomplete="tel"
+                   [attr.aria-invalid]="form.controls.telefono.touched && form.controls.telefono.invalid"
+                   aria-describedby="telefono-error" />
+            <app-field-error [control]="form.controls.telefono" id="telefono-error" />
+          </div>
+
+          <div class="form-field">
+            <label for="correoContacto">Correo electrónico <span aria-hidden="true">*</span></label>
+            <input id="correoContacto" type="email" formControlName="correoContacto" autocomplete="email"
+                   [attr.aria-invalid]="form.controls.correoContacto.touched && form.controls.correoContacto.invalid"
+                   aria-describedby="correoContacto-error" />
+            <app-field-error [control]="form.controls.correoContacto" id="correoContacto-error" />
+          </div>
+        </div>
+      </fieldset>
+    }
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="submitting() || loadingCatalog()">
+        {{ submitting() ? 'Enviando…' : 'Enviar solicitud' }}
+      </button>
+      <a class="btn btn-secondary" routerLink="/solicitudes">Cancelar</a>
+    </div>
+  </form>
+</section>
