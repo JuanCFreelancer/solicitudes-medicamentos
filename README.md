@@ -100,7 +100,7 @@ sequenceDiagram
 │       ├── layout/          cabecera
 │       └── features/        auth/ (login, registro) · solicitudes/ (formulario, listado, servicios)
 ├── database/                schema.sql · seed.sql · er-diagram.md (modelo E-R en Mermaid)
-├── docs/                    postman-collection.json
+├── docs/                    diagramas.md · img/ · postman-collection.json
 ├── scripts/smoke-test.sh    prueba de humo end-to-end
 ├── .github/workflows/ci.yml integración continua
 ├── docker-compose.yml
