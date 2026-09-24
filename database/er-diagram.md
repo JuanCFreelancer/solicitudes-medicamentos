@@ -6,6 +6,8 @@ Diagrama en Mermaid (texto plano, versionable; se renderiza en GitHub).
 erDiagram
     USUARIOS ||--o{ SOLICITUDES : "crea"
     MEDICAMENTOS ||--o{ SOLICITUDES : "es solicitado en"
+    USUARIOS ||..o{ NOTIFICACIONES : "destinatario (referencia lógica)"
+    SOLICITUDES ||..o{ NOTIFICACIONES : "referencia (lógica)"
 
     USUARIOS {
         bigint id PK
@@ -32,6 +34,18 @@ erDiagram
         varchar correo_contacto "solo NO POS"
         timestamptz created_at
     }
+
+    NOTIFICACIONES {
+        bigint id PK
+        bigint usuario_id "referencia lógica, sin FK"
+        varchar destinatario
+        varchar asunto
+        varchar mensaje
+        varchar canal "EMAIL"
+        varchar estado "ENVIADA | FALLIDA"
+        varchar referencia "p. ej. solicitud:12, sin FK"
+        timestamptz created_at
+    }
 ```
 
 ## Cardinalidades
@@ -51,5 +65,6 @@ erDiagram
 ## Esquemas
 - `auth` → tabla `usuarios` (propiedad de `auth-service`).
 - `solicitudes` → tablas `medicamentos` y `solicitudes` (propiedad de `solicitudes-service`).
+- `notificaciones` → tabla `notificaciones` (propiedad de `notificaciones-service`). Sus vínculos con usuarios y solicitudes son **lógicos** (sin FK) para que el servicio pueda tener su propia base de datos.
 
 Script completo: [`schema.sql`](schema.sql) · datos de ejemplo: [`seed.sql`](seed.sql).
