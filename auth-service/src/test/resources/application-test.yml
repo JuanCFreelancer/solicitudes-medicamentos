@@ -1,0 +1,6 @@
+app:
+  jwt:
+    secret: secreto-de-pruebas-con-mas-de-32-caracteres!!
+    expiration-minutes: 5
+  cors:
+    allowed-origins: http://localhost:4200
