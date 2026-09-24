@@ -1,6 +1,6 @@
 # Diagramas
 
-Todos los diagramas están en Mermaid (texto versionable; GitHub los renderiza). Las imágenes exportadas para diapositivas están en [`docs/img/`](img/).
+Todos los diagramas están en Mermaid (texto versionable; GitHub los renderiza). Las imágenes exportadas (SVG y PNG) están en [`docs/img/`](img/).
 
 **Índice**
 1. [Vista SOA por capas](#1-vista-soa-por-capas)
