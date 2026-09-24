@@ -1,0 +1,38 @@
+<nav class="pagination" aria-label="Paginación de resultados">
+  <p class="pagination-summary" aria-live="polite">
+    Mostrando <strong>{{ from() }}–{{ to() }}</strong> de <strong>{{ totalElements() }}</strong>
+  </p>
+
+  <div class="pagination-controls">
+    <label class="pagination-size">
+      <span>Por página</span>
+      <select [value]="size()" (change)="changeSize($event)">
+        @for (option of sizeOptions(); track option) {
+          <option [value]="option" [selected]="option === size()">{{ option }}</option>
+        }
+      </select>
+    </label>
+
+    <button type="button" class="btn btn-secondary btn-sm" (click)="goTo(page() - 1)" [disabled]="isFirst()">
+      Anterior
+    </button>
+
+    @for (p of pages(); track p) {
+      <button
+        type="button"
+        class="btn btn-sm"
+        [class.btn-primary]="p === page()"
+        [class.btn-secondary]="p !== page()"
+        [attr.aria-current]="p === page() ? 'page' : null"
+        [attr.aria-label]="'Ir a la página ' + (p + 1)"
+        (click)="goTo(p)"
+      >
+        {{ p + 1 }}
+      </button>
+    }
+
+    <button type="button" class="btn btn-secondary btn-sm" (click)="goTo(page() + 1)" [disabled]="isLast()">
+      Siguiente
+    </button>
+  </div>
+</nav>

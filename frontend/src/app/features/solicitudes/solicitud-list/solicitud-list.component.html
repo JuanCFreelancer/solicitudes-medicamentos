@@ -1,0 +1,68 @@
+<section class="card">
+  <div class="card-header">
+    <h1>Mis solicitudes</h1>
+    <a class="btn btn-primary" routerLink="/solicitudes/nueva">Nueva solicitud</a>
+  </div>
+
+  @if (errorMessage(); as message) {
+    <app-alert type="error">
+      {{ message }}
+      <button type="button" class="btn btn-secondary btn-sm" (click)="retry()">Reintentar</button>
+    </app-alert>
+  }
+
+  @if (loading() && !data()) {
+    <p class="muted" role="status">Cargando solicitudes…</p>
+  } @else if (isEmpty()) {
+    <div class="empty-state">
+      <p>Aún no has creado ninguna solicitud.</p>
+      <a class="btn btn-primary" routerLink="/solicitudes/nueva">Crear mi primera solicitud</a>
+    </div>
+  } @else if (data()) {
+    @let result = data()!;
+    <div class="table-wrapper" [class.is-loading]="loading()" [attr.aria-busy]="loading()">
+      <table class="table">
+        <caption class="visually-hidden">Listado de solicitudes de medicamentos</caption>
+        <thead>
+          <tr>
+            <th scope="col">N.º</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Medicamento</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">N.º de orden</th>
+            <th scope="col">Dirección</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Correo</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (solicitud of result.content; track solicitud.id) {
+            <tr>
+              <td>{{ solicitud.id }}</td>
+              <td>{{ solicitud.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ solicitud.medicamento.nombre }}</td>
+              <td>
+                <span class="badge" [class.badge-pos]="solicitud.medicamento.esPos" [class.badge-no-pos]="!solicitud.medicamento.esPos">
+                  {{ solicitud.medicamento.esPos ? 'POS' : 'NO POS' }}
+                </span>
+              </td>
+              <td>{{ solicitud.numeroOrden ?? '—' }}</td>
+              <td>{{ solicitud.direccion ?? '—' }}</td>
+              <td>{{ solicitud.telefono ?? '—' }}</td>
+              <td>{{ solicitud.correoContacto ?? '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <app-pagination
+      [page]="result.page"
+      [size]="result.size"
+      [totalElements]="result.totalElements"
+      [totalPages]="result.totalPages"
+      (pageChange)="goToPage($event)"
+      (sizeChange)="changeSize($event)"
+    />
+  }
+</section>
