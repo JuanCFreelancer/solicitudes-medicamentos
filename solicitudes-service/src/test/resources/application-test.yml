@@ -1,0 +1,8 @@
+app:
+  jwt:
+    secret: secreto-de-pruebas-con-mas-de-32-caracteres!!
+  cors:
+    allowed-origins: http://localhost:4200
+  pagination:
+    default-size: 10
+    max-size: 50
