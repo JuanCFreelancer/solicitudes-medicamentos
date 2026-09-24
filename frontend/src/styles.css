@@ -1,46 +1,54 @@
 /* ==========================================================================
-   Solicitudes de Medicamentos — Design System
-   Identidad visual inspirada en Nueva EPS
+   Solicitudes de Medicamentos — Nueva EPS
+   Identidad visual basada en nuevaeps.com.co
    ========================================================================== */
 
-/* ---------- Google Fonts ---------- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* ---------- Google Fonts: Nunito (redondeada como el logo de Nueva EPS) + Inter ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap');
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Paleta corporativa */
-  --color-primary: #005096;
-  --color-primary-hover: #003d75;
-  --color-primary-light: #e8f0fa;
-  --color-primary-50: #f0f6ff;
-  --color-accent: #00A86B;
-  --color-accent-hover: #008c59;
-  --color-accent-light: #e6f8f0;
-
-  /* Superficies */
-  --color-bg: #f0f4f8;
-  --color-surface: #ffffff;
-  --color-text: #1a2332;
-  --color-muted: #5b6a7d;
-  --color-border: #d1dae6;
+  /* Paleta Nueva EPS */
+  --neps-navy: #1B3A5C;
+  --neps-navy-dark: #122840;
+  --neps-blue: #4A9FD9;
+  --neps-blue-hover: #3B8BC4;
+  --neps-blue-light: #EBF4FB;
+  --neps-blue-50: #F5F9FD;
+  --neps-cyan: #5CB8E4;
+  --neps-gray-100: #F7F8FA;
+  --neps-gray-200: #EEF0F4;
+  --neps-gray-300: #D9DCE3;
+  --neps-gray-500: #6B7A8D;
+  --neps-gray-700: #3D4F63;
+  --neps-white: #FFFFFF;
 
   /* Semánticos */
-  --color-danger: #c4320a;
-  --color-danger-bg: #fef0ec;
-  --color-success: #0b6b3a;
-  --color-success-bg: #e6f6ed;
-  --color-info: #005096;
-  --color-info-bg: #e8f0fa;
-  --color-warning-bg: #fff8eb;
-  --color-warning-border: #f0c36d;
+  --color-primary: var(--neps-blue);
+  --color-primary-hover: var(--neps-blue-hover);
+  --color-bg: var(--neps-gray-100);
+  --color-surface: var(--neps-white);
+  --color-text: var(--neps-navy);
+  --color-muted: var(--neps-gray-500);
+  --color-border: var(--neps-gray-300);
+  --color-danger: #C53030;
+  --color-danger-bg: #FFF5F5;
+  --color-success: #276749;
+  --color-success-bg: #F0FFF4;
+  --color-info: var(--neps-blue);
+  --color-info-bg: var(--neps-blue-light);
+  --color-warning-bg: #FFFAF0;
+  --color-warning-border: #ECC94B;
 
   /* Layout */
   --radius: 12px;
   --radius-sm: 8px;
-  --shadow: 0 1px 3px rgb(0 51 102 / 8%), 0 1px 2px rgb(0 51 102 / 4%);
-  --shadow-md: 0 4px 12px rgb(0 51 102 / 10%), 0 2px 4px rgb(0 51 102 / 5%);
-  --shadow-lg: 0 8px 30px rgb(0 51 102 / 12%);
-  --focus: 0 0 0 3px rgb(0 80 150 / 30%);
+  --radius-pill: 50px;
+  --shadow-sm: 0 1px 2px rgb(27 58 92 / 5%);
+  --shadow: 0 1px 4px rgb(27 58 92 / 8%), 0 1px 2px rgb(27 58 92 / 4%);
+  --shadow-md: 0 4px 16px rgb(27 58 92 / 8%);
+  --shadow-lg: 0 8px 32px rgb(27 58 92 / 10%);
+  --focus: 0 0 0 3px rgb(74 159 217 / 35%);
 
   /* Transiciones */
   --transition-fast: 150ms ease;
@@ -57,7 +65,7 @@
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   color: var(--color-text);
   background: var(--color-bg);
@@ -66,20 +74,21 @@ body {
 }
 
 h1 {
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
+  font-family: 'Nunito', 'Inter', sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.25;
-  letter-spacing: -0.01em;
+  color: var(--neps-navy);
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--neps-blue);
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-primary-hover);
+  color: var(--neps-blue-hover);
 }
 
 .container {
@@ -102,11 +111,11 @@ a:hover {
   white-space: nowrap;
 }
 
-/* ---------- Header ---------- */
+/* ---------- Header (estilo nuevaeps.com.co: fondo blanco, logo centrado) ---------- */
 .app-header {
-  background: linear-gradient(135deg, #005096 0%, #003d75 100%);
-  border-bottom: 3px solid var(--color-accent);
-  box-shadow: 0 2px 12px rgb(0 51 102 / 15%);
+  background: var(--neps-white);
+  border-bottom: 1px solid var(--neps-gray-200);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -117,71 +126,68 @@ a:hover {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem 1.5rem;
-  padding-top: 0.65rem;
-  padding-bottom: 0.65rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: #ffffff;
+  gap: 0.65rem;
   text-decoration: none;
-  letter-spacing: -0.01em;
   transition: opacity var(--transition-fast);
 }
 
 .brand:hover {
-  opacity: 0.9;
-  color: #ffffff;
+  opacity: 0.85;
 }
 
 .brand-logo {
-  width: 32px;
-  height: 32px;
+  height: 40px;
+  width: auto;
   flex-shrink: 0;
 }
 
 .brand-divider {
   width: 1px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.3);
+  height: 28px;
+  background: var(--neps-gray-300);
 }
 
-.brand-subtitle {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.brand-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--neps-gray-500);
+  line-height: 1.3;
+  max-width: 140px;
 }
 
 .app-nav {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.2rem;
   flex: 1;
+  margin-left: 0.5rem;
 }
 
 .app-nav a {
-  padding: 0.35rem 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  padding: 0.4rem 0.85rem;
+  color: var(--neps-gray-500);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   transition: all var(--transition-fast);
 }
 
 .app-nav a:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--neps-navy);
+  background: var(--neps-gray-100);
 }
 
 .app-nav a.active {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--neps-white);
+  background: var(--neps-blue);
   font-weight: 600;
 }
 
@@ -197,17 +203,17 @@ a:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  color: var(--neps-gray-500);
+  font-size: 0.85rem;
 }
 
 .btn-logout {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 0.8rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: var(--radius-sm);
+  color: var(--neps-gray-500);
+  background: transparent;
+  border: 1.5px solid var(--neps-gray-300);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-family: inherit;
   font-weight: 600;
@@ -215,28 +221,23 @@ a:hover {
 }
 
 .btn-logout:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--neps-navy);
+  border-color: var(--neps-navy);
+  background: var(--neps-gray-100);
 }
 
 .btn-logout:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+  box-shadow: var(--focus);
 }
 
 /* ---------- Cards ---------- */
 .card {
   padding: 1.75rem;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--neps-gray-200);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: box-shadow var(--transition);
-}
-
-.card-narrow {
-  max-width: 440px;
-  margin: 2rem auto 0;
 }
 
 .card-header {
@@ -252,53 +253,50 @@ a:hover {
   margin: 0;
 }
 
-/* ---------- Auth layout (login/registro) ---------- */
+/* ---------- Auth layout (login/registro — estilo nueva EPS centrado) ---------- */
 .auth-wrapper {
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 100px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: linear-gradient(160deg, var(--color-bg) 0%, var(--color-primary-light) 100%);
+  background: var(--neps-white);
 }
 
 .auth-card {
   width: 100%;
-  max-width: 440px;
-  padding: 2rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
+  max-width: 420px;
+  padding: 2.5rem 2rem;
 }
 
 .auth-card h1 {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  font-weight: 800;
   margin-bottom: 0.25rem;
+  color: var(--neps-navy);
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--neps-blue);
+  font-size: 0.875rem;
+  margin: 0 0 1.75rem;
 }
 
 .auth-brand {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
   text-decoration: none;
   color: var(--color-text);
 }
 
 .auth-brand-logo {
-  width: 48px;
-  height: 48px;
-}
-
-.auth-brand-name {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  height: 56px;
+  width: auto;
 }
 
 /* ---------- Forms ---------- */
@@ -316,30 +314,30 @@ label {
   display: block;
   margin-bottom: 0.3rem;
   font-weight: 600;
-  font-size: 0.875rem;
-  color: var(--color-text);
+  font-size: 0.85rem;
+  color: var(--neps-gray-700);
 }
 
 input,
 select {
   width: 100%;
-  padding: 0.65rem 0.85rem;
+  padding: 0.65rem 0.9rem;
   font: inherit;
-  font-size: 0.95rem;
-  color: inherit;
-  background: #fff;
-  border: 1.5px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--neps-white);
+  border: 1.5px solid var(--neps-gray-300);
   border-radius: var(--radius-sm);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 input::placeholder {
-  color: #9ca3af;
+  color: #b0b8c4;
 }
 
 input:hover,
 select:hover {
-  border-color: #b0bdd0;
+  border-color: var(--neps-blue);
 }
 
 input:focus,
@@ -347,26 +345,26 @@ select:focus,
 .btn:focus-visible,
 a:focus-visible {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--neps-blue);
   box-shadow: var(--focus);
 }
 
 input[aria-invalid='true'],
 select[aria-invalid='true'] {
   border-color: var(--color-danger);
-  box-shadow: 0 0 0 3px rgb(196 50 10 / 12%);
+  box-shadow: 0 0 0 3px rgb(197 48 48 / 10%);
 }
 
 .field-error {
   margin: 0.3rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--color-danger);
 }
 
 .field-hint {
   margin: 0.3rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--color-muted);
 }
 
@@ -381,7 +379,8 @@ select[aria-invalid='true'] {
 .fieldset-no-pos legend {
   padding: 0 0.5rem;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--neps-navy);
 }
 
 .form-actions {
@@ -392,27 +391,27 @@ select[aria-invalid='true'] {
 }
 
 .form-footer {
-  margin: 1.25rem 0 0;
+  margin: 1.5rem 0 0;
   text-align: center;
   color: var(--color-muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- Buttons (estilo Nueva EPS: pill-shaped, azul cielo) ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
+  padding: 0.6rem 1.5rem;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 600;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   border: 1.5px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   transition: all var(--transition-fast);
 }
 
@@ -421,16 +420,17 @@ select[aria-invalid='true'] {
   opacity: 0.55;
 }
 
+/* Botón principal: azul cielo estilo Nueva EPS */
 .btn-primary {
-  color: #fff;
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  color: var(--neps-white);
+  background: var(--neps-blue);
+  border-color: var(--neps-blue);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-  box-shadow: 0 2px 8px rgb(0 80 150 / 25%);
+  background: var(--neps-blue-hover);
+  border-color: var(--neps-blue-hover);
+  box-shadow: 0 4px 12px rgb(74 159 217 / 30%);
   transform: translateY(-1px);
 }
 
@@ -439,33 +439,32 @@ select[aria-invalid='true'] {
   box-shadow: none;
 }
 
-.btn-accent {
-  color: #fff;
-  background: var(--color-accent);
-  border-color: var(--color-accent);
+/* Botón con flecha (estilo exacto de Nueva EPS) */
+.btn-arrow::after {
+  content: '→';
+  font-size: 1.1em;
+  margin-left: 0.35rem;
+  transition: transform var(--transition-fast);
 }
 
-.btn-accent:hover:not(:disabled) {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
-  box-shadow: 0 2px 8px rgb(0 168 107 / 25%);
-  transform: translateY(-1px);
+.btn-arrow:hover::after {
+  transform: translateX(3px);
 }
 
 .btn-secondary {
-  color: var(--color-text);
-  background: #fff;
-  border-color: var(--color-border);
+  color: var(--neps-gray-700);
+  background: var(--neps-white);
+  border-color: var(--neps-gray-300);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--color-bg);
-  border-color: #b0bdd0;
+  background: var(--neps-gray-100);
+  border-color: var(--neps-gray-500);
 }
 
 .btn-sm {
-  padding: 0.3rem 0.7rem;
-  font-size: 0.825rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
 }
 
 .btn-block {
@@ -482,31 +481,31 @@ select[aria-invalid='true'] {
   padding: 0.75rem 1rem;
   border: 1.5px solid transparent;
   border-radius: var(--radius-sm);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .alert-error {
   color: var(--color-danger);
   background: var(--color-danger-bg);
-  border-color: #f4b8b1;
+  border-color: #FEB2B2;
 }
 
 .alert-success {
   color: var(--color-success);
   background: var(--color-success-bg);
-  border-color: #a8dcbc;
+  border-color: #9AE6B4;
 }
 
 .alert-info {
-  color: var(--color-info);
-  background: var(--color-info-bg);
-  border-color: #b3d3f0;
+  color: var(--neps-navy);
+  background: var(--neps-blue-light);
+  border-color: #BEE3F8;
 }
 
 /* ---------- Table ---------- */
 .table-wrapper {
   overflow-x: auto;
-  border: 1.5px solid var(--color-border);
+  border: 1px solid var(--neps-gray-200);
   border-radius: var(--radius);
   transition: opacity var(--transition-fast);
 }
@@ -518,7 +517,7 @@ select[aria-invalid='true'] {
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .table th,
@@ -526,16 +525,16 @@ select[aria-invalid='true'] {
   padding: 0.7rem 0.9rem;
   text-align: left;
   white-space: nowrap;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--neps-gray-200);
 }
 
 .table th {
-  background: var(--color-primary-50);
-  font-size: 0.75rem;
+  background: var(--neps-blue-50);
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-primary);
+  letter-spacing: 0.06em;
+  color: var(--neps-navy);
 }
 
 .table tbody tr:last-child td {
@@ -547,16 +546,16 @@ select[aria-invalid='true'] {
 }
 
 .table tbody tr:hover {
-  background: var(--color-primary-50);
+  background: var(--neps-blue-50);
 }
 
 .badge {
   display: inline-block;
-  padding: 0.15rem 0.6rem;
-  font-size: 0.72rem;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  border-radius: 999px;
+  letter-spacing: 0.03em;
+  border-radius: var(--radius-pill);
 }
 
 .badge-pos {
@@ -565,19 +564,20 @@ select[aria-invalid='true'] {
 }
 
 .badge-no-pos {
-  color: #8a5300;
+  color: #975A16;
   background: var(--color-warning-bg);
   border: 1px solid var(--color-warning-border);
 }
 
 .empty-state {
-  padding: 2.5rem 1rem;
+  padding: 3rem 1rem;
   text-align: center;
   color: var(--color-muted);
 }
 
 .empty-state p {
-  margin-bottom: 1rem;
+  margin: 0.75rem 0 1.25rem;
+  font-size: 0.95rem;
 }
 
 /* ---------- Pagination ---------- */
@@ -593,7 +593,7 @@ select[aria-invalid='true'] {
 .pagination-summary {
   margin: 0;
   color: var(--color-muted);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
 }
 
 .pagination-controls {
@@ -609,27 +609,48 @@ select[aria-invalid='true'] {
   gap: 0.4rem;
   margin: 0 0.75rem 0 0;
   font-weight: 400;
-  font-size: 0.85rem;
+  font-size: 0.825rem;
 }
 
 .pagination-size select {
   width: auto;
   padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-sm);
 }
 
-/* ---------- Footer banner ---------- */
+/* ---------- Footer (azul marino oscuro estilo Nueva EPS) ---------- */
 .app-footer {
-  margin-top: auto;
-  padding: 1rem;
+  background: var(--neps-navy-dark);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 1.5rem 1rem;
   text-align: center;
   font-size: 0.78rem;
-  color: var(--color-muted);
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
+  letter-spacing: 0.01em;
 }
 
 .app-footer strong {
-  color: var(--color-primary);
+  color: var(--neps-white);
+  font-weight: 700;
+}
+
+.app-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.app-footer-links a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.app-footer-links a:hover {
+  color: var(--neps-white);
 }
 
 /* ---------- Loading spinner ---------- */
@@ -639,20 +660,21 @@ select[aria-invalid='true'] {
 
 .spinner {
   display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 2.5px solid var(--color-border);
-  border-top-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--neps-gray-300);
+  border-top-color: var(--neps-blue);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   vertical-align: middle;
+  margin-right: 0.4rem;
 }
 
 /* ---------- Fade-in animation ---------- */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -661,7 +683,7 @@ select[aria-invalid='true'] {
 }
 
 .fade-in {
-  animation: fadeInUp 0.35s ease-out;
+  animation: fadeInUp 0.3s ease-out;
 }
 
 /* ---------- Responsive ---------- */
@@ -676,8 +698,11 @@ select[aria-invalid='true'] {
   }
 
   .auth-card {
-    padding: 1.5rem;
-    margin: 0 0.5rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .brand-text {
+    display: none;
   }
 }
 

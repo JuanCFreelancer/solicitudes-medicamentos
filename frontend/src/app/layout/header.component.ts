@@ -9,11 +9,9 @@ import { AuthService } from '../core/services/auth.service';
     <header class="app-header">
       <div class="container app-header-inner">
         <a class="brand" routerLink="/">
-          <img class="brand-logo" src="logo-nueva-eps.svg" alt="" width="32" height="32" />
-          <div>
-            <span>Solicitudes de medicamentos</span>
-            <span class="brand-subtitle">Nueva EPS</span>
-          </div>
+          <img class="brand-logo" src="logo-nueva-eps.png" alt="Nueva EPS" height="40" />
+          <span class="brand-divider"></span>
+          <span class="brand-text">Solicitudes de medicamentos</span>
         </a>
 
         @if (auth.session(); as session) {

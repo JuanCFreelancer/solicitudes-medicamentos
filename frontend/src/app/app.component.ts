@@ -11,7 +11,10 @@ import { HeaderComponent } from './layout/header.component';
       <router-outlet />
     </main>
     <footer class="app-footer">
-      Prueba técnica — <strong>Nueva EPS</strong> · Solicitudes de medicamentos
+      <div>Prueba técnica · <strong>Nueva EPS</strong> · Solicitudes de medicamentos</div>
+      <div class="app-footer-links">
+        <a href="https://nuevaeps.com.co" target="_blank" rel="noopener">nuevaeps.com.co</a>
+      </div>
     </footer>
   `,
   styles: `

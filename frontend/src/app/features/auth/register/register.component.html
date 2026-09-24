@@ -1,10 +1,11 @@
 <div class="auth-wrapper">
   <section class="auth-card fade-in">
     <div class="auth-brand">
-      <img class="auth-brand-logo" src="logo-nueva-eps.svg" alt="Logo" width="48" height="48" />
-      <span class="auth-brand-name">Nueva EPS</span>
+      <img class="auth-brand-logo" src="logo-nueva-eps.png" alt="Nueva EPS" height="56" />
     </div>
+
     <h1>Crear cuenta</h1>
+    <p class="auth-subtitle">Regístrate para solicitar tus medicamentos</p>
 
     @if (errorMessage(); as message) {
       <app-alert type="error">{{ message }}</app-alert>
@@ -40,7 +41,7 @@
         <app-field-error [control]="form.controls.confirmPassword" id="confirm-error" />
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+      <button type="submit" class="btn btn-primary btn-block btn-arrow" [disabled]="loading()">
         {{ loading() ? 'Creando cuenta…' : 'Registrarme' }}
       </button>
     </form>
