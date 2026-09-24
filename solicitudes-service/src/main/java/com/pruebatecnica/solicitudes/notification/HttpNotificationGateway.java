@@ -1,8 +1,10 @@
 package com.pruebatecnica.solicitudes.notification;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pruebatecnica.solicitudes.web.CorrelationIdFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -27,6 +29,13 @@ public class HttpNotificationGateway implements NotificationGateway {
             Reply reply = restClient.post()
                     .uri("/notificaciones")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + command.bearerToken())
+                    .headers(headers -> {
+                        // el mismo id viaja al otro servicio: los logs de ambos se pueden unir
+                        String correlationId = MDC.get(CorrelationIdFilter.MDC_KEY);
+                        if (correlationId != null) {
+                            headers.set(CorrelationIdFilter.HEADER, correlationId);
+                        }
+                    })
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new Body(command.destinatario(), command.asunto(), command.mensaje(), command.referencia()))
                     .retrieve()

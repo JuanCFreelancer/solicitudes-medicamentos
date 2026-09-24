@@ -11,7 +11,9 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.io.IOException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.MDC;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,23 @@ class HttpNotificationGatewayTest {
         RestClient.Builder builder = RestClient.builder().baseUrl("http://notificaciones");
         server = MockRestServiceServer.bindTo(builder).build();
         gateway = new HttpNotificationGateway(builder.build());
+    }
+
+    @AfterEach
+    void clearMdc() {
+        MDC.clear();
+    }
+
+    @Test
+    void reenviaElIdDeCorrelacionAlOtroServicio() {
+        MDC.put("correlationId", "proceso-42");
+        server.expect(requestTo("http://notificaciones/notificaciones"))
+                .andExpect(header("X-Correlation-Id", "proceso-42"))
+                .andRespond(withStatus(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON)
+                        .body("{\"estado\":\"ENVIADA\"}"));
+
+        assertThat(gateway.enviar(COMMAND)).isEqualTo(EstadoNotificacion.ENVIADA);
+        server.verify();
     }
 
     @Test
