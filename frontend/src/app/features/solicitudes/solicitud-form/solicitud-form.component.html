@@ -1,4 +1,4 @@
-<section class="card">
+<section class="card fade-in">
   <h1>Nueva solicitud de medicamento</h1>
 
   @if (created(); as solicitud) {
@@ -49,13 +49,13 @@
     </div>
 
     @if (isNoPos()) {
-      <fieldset class="fieldset-no-pos">
+      <fieldset class="fieldset-no-pos fade-in">
         <legend>Datos adicionales — medicamento NO POS</legend>
         <p class="field-hint">Todos los campos de esta sección son obligatorios.</p>
 
         <div class="form-field">
           <label for="numeroOrden">Número de orden <span aria-hidden="true">*</span></label>
-          <input id="numeroOrden" type="text" formControlName="numeroOrden" autocomplete="off"
+          <input id="numeroOrden" type="text" formControlName="numeroOrden" autocomplete="off" placeholder="ORD-2026-001"
                  [attr.aria-invalid]="form.controls.numeroOrden.touched && form.controls.numeroOrden.invalid"
                  aria-describedby="numeroOrden-error" />
           <app-field-error [control]="form.controls.numeroOrden" id="numeroOrden-error" />
@@ -63,7 +63,7 @@
 
         <div class="form-field">
           <label for="direccion">Dirección <span aria-hidden="true">*</span></label>
-          <input id="direccion" type="text" formControlName="direccion" autocomplete="street-address"
+          <input id="direccion" type="text" formControlName="direccion" autocomplete="street-address" placeholder="Calle 10 # 20-30, Bogotá"
                  [attr.aria-invalid]="form.controls.direccion.touched && form.controls.direccion.invalid"
                  aria-describedby="direccion-error" />
           <app-field-error [control]="form.controls.direccion" id="direccion-error" />
@@ -72,7 +72,7 @@
         <div class="form-row">
           <div class="form-field">
             <label for="telefono">Teléfono <span aria-hidden="true">*</span></label>
-            <input id="telefono" type="tel" formControlName="telefono" autocomplete="tel"
+            <input id="telefono" type="tel" formControlName="telefono" autocomplete="tel" placeholder="300 123 4567"
                    [attr.aria-invalid]="form.controls.telefono.touched && form.controls.telefono.invalid"
                    aria-describedby="telefono-error" />
             <app-field-error [control]="form.controls.telefono" id="telefono-error" />
@@ -80,7 +80,7 @@
 
           <div class="form-field">
             <label for="correoContacto">Correo electrónico <span aria-hidden="true">*</span></label>
-            <input id="correoContacto" type="email" formControlName="correoContacto" autocomplete="email"
+            <input id="correoContacto" type="email" formControlName="correoContacto" autocomplete="email" placeholder="paciente@correo.com"
                    [attr.aria-invalid]="form.controls.correoContacto.touched && form.controls.correoContacto.invalid"
                    aria-describedby="correoContacto-error" />
             <app-field-error [control]="form.controls.correoContacto" id="correoContacto-error" />

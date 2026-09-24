@@ -8,7 +8,13 @@ import { AuthService } from '../core/services/auth.service';
   template: `
     <header class="app-header">
       <div class="container app-header-inner">
-        <a class="brand" routerLink="/">Solicitudes de medicamentos</a>
+        <a class="brand" routerLink="/">
+          <img class="brand-logo" src="logo-nueva-eps.svg" alt="" width="32" height="32" />
+          <div>
+            <span>Solicitudes de medicamentos</span>
+            <span class="brand-subtitle">Nueva EPS</span>
+          </div>
+        </a>
 
         @if (auth.session(); as session) {
           <nav class="app-nav" aria-label="Navegación principal">
@@ -17,7 +23,7 @@ import { AuthService } from '../core/services/auth.service';
           </nav>
           <div class="app-user">
             <span class="app-user-name" [title]="session.email">{{ session.nombre || session.email }}</span>
-            <button type="button" class="btn btn-secondary btn-sm" (click)="logout()">Cerrar sesión</button>
+            <button type="button" class="btn-logout" (click)="logout()">Cerrar sesión</button>
           </div>
         }
       </div>
