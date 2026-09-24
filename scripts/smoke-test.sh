@@ -1,28 +1,15 @@
 #!/usr/bin/env bash
 # Prueba de humo end-to-end contra los servicios levantados (docker compose up).
-# Uso: ./scripts/smoke-test.sh [AUTH_URL] [SOLICITUDES_URL]
+# Uso: ./scripts/smoke-test.sh [AUTH_URL] [SOLICITUDES_URL] [NOTIFICACIONES_URL]
 set -uo pipefail
 
 AUTH="${1:-http://localhost:8081}"
 SOL="${2:-http://localhost:8082}"
+NOTIF="${3:-http://localhost:8083}"
 EMAIL="smoke.$(date +%s)@correo.com"
 PASS="Clave12345"
-FAILS=0
 
-# check <descripción> <código esperado> <código real>
-check() {
-  if [ "$2" = "$3" ]; then echo "  OK   $1 ($3)"; else echo "  FAIL $1 (esperado $2, obtenido $3)"; FAILS=$((FAILS + 1)); fi
-}
-# http <método> <url> [token] [body]  -> imprime "codigo|cuerpo"
-http() {
-  local method="$1" url="$2" token="${3:-}" body="${4:-}"
-  local args=(-s -w '|%{http_code}' -X "$method" "$url" -H 'Content-Type: application/json')
-  [ -n "$token" ] && args+=(-H "Authorization: Bearer $token")
-  [ -n "$body" ] && args+=(-d "$body")
-  curl "${args[@]}"
-}
-code() { echo "${1##*|}"; }
-body() { echo "${1%|*}"; }
+source "$(dirname "$0")/lib.sh"
 
 echo "== Autenticación =="
 r=$(http POST "$AUTH/auth/register" "" "{\"nombre\":\"Smoke Test\",\"email\":\"$EMAIL\",\"password\":\"$PASS\"}")
@@ -52,6 +39,7 @@ NOPOS_ID=$(body "$r" | grep -o '"id":[0-9]*,"nombre":"[^"]*","esPos":false' | he
 
 r=$(http POST "$SOL/solicitudes" "$TOKEN" "{\"medicamentoId\":$POS_ID}")
 check "crear solicitud POS (sin campos adicionales)" 201 "$(code "$r")"
+assert_contains "la respuesta informa la notificación (servicio compuesto)" "$(body "$r")" '"notificacion":"ENVIADA"' 
 r=$(http POST "$SOL/solicitudes" "$TOKEN" "{\"medicamentoId\":$NOPOS_ID}")
 check "crear NO POS sin campos -> validación" 400 "$(code "$r")"
 r=$(http POST "$SOL/solicitudes" "$TOKEN" "{\"medicamentoId\":$NOPOS_ID,\"numeroOrden\":\"ORD-1\",\"direccion\":\"Calle 1 # 2-3\",\"telefono\":\"3001234567\",\"correoContacto\":\"correo-malo\"}")
@@ -84,5 +72,26 @@ TOKEN2=$(body "$r" | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
 r=$(http GET "$SOL/solicitudes" "$TOKEN2")
 echo "$(body "$r")" | grep -q '"totalElements":0' && echo "  OK   el segundo usuario no ve solicitudes ajenas" || { echo "  FAIL fuga de datos entre usuarios"; FAILS=$((FAILS + 1)); }
 
-echo
-if [ "$FAILS" -eq 0 ]; then echo "TODAS LAS PRUEBAS OK"; else echo "$FAILS PRUEBA(S) FALLARON"; exit 1; fi
+echo "== Composición: Radicar solicitud -> notificaciones-service =="
+r=$(http GET "$NOTIF/notificaciones")
+check "notificaciones sin token" 401 "$(code "$r")"
+r=$(http GET "$NOTIF/notificaciones?size=50" "$TOKEN")
+check "listar notificaciones del usuario" 200 "$(code "$r")"
+n=$(body "$r")
+assert_contains "1 notificación por cada solicitud creada (4)" "$n" '"totalElements":4'
+assert_contains "POS notifica al correo de la cuenta" "$n" "\"destinatario\":\"$EMAIL\""
+assert_contains "NO POS notifica al correo de contacto de la solicitud" "$n" '"destinatario":"paciente1@correo.com"'
+assert_contains "cada notificación referencia su solicitud" "$n" '"referencia":"solicitud:'
+assert_contains "todas quedaron ENVIADA" "$n" '"estado":"ENVIADA"'
+r=$(http GET "$NOTIF/notificaciones" "$TOKEN2")
+assert_contains "el segundo usuario no ve notificaciones ajenas" "$(body "$r")" '"totalElements":0'
+r=$(http POST "$NOTIF/notificaciones" "$TOKEN" '{"destinatario":"no-es-correo","asunto":"","mensaje":""}')
+check "notificaciones valida su contrato" 400 "$(code "$r")"
+
+echo "== Trazabilidad: X-Correlation-Id =="
+h=$(curl -s -D - -o /dev/null -H 'X-Correlation-Id: smoke-proceso-1' "$SOL/solicitudes")
+assert_contains "se devuelve el id recibido (incluso en un 401)" "${h,,}" "x-correlation-id: smoke-proceso-1"
+h=$(curl -s -D - -o /dev/null "$SOL/solicitudes")
+assert_contains "se genera un id cuando el cliente no envía uno" "${h,,}" "x-correlation-id: "
+
+finish
