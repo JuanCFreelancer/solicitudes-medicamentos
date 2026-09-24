@@ -29,6 +29,10 @@ app:
     base-url: ${NOTIFICATIONS_BASE_URL:http://localhost:8083}
     timeout: ${NOTIFICATIONS_TIMEOUT:2s}
 
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{correlationId:-}]"   # cada línea de log lleva el id de correlación
+
 management:
   endpoints:
     web:

@@ -23,6 +23,10 @@ app:
     default-size: 10
     max-size: 50
 
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{correlationId:-}]"   # cada línea de log lleva el id de correlación
+
 management:
   endpoints:
     web:
