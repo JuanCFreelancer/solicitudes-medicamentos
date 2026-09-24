@@ -123,7 +123,7 @@ Las tres fases de SOA (exposición, composición y consumo) aplicadas al proyect
 │       ├── layout/          cabecera
 │       └── features/        auth/ (login, registro) · solicitudes/ (formulario, listado, servicios)
 ├── database/                schema.sql · seed.sql · er-diagram.md (modelo E-R en Mermaid)
-├── docs/                    diagramas.md · img/ · postman-collection.json
+├── docs/                    requisitos.md · diagramas.md · img/ · postman-collection.json
 ├── scripts/                 smoke-test.sh · resilience-test.sh (end-to-end)
 ├── .github/workflows/ci.yml integración continua
 ├── docker-compose.yml
