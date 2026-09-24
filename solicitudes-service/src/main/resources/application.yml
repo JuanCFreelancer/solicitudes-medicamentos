@@ -24,6 +24,10 @@ app:
   pagination:
     default-size: 10
     max-size: 50
+  notifications:                  # integración con notificaciones-service (composición)
+    enabled: ${NOTIFICATIONS_ENABLED:true}
+    base-url: ${NOTIFICATIONS_BASE_URL:http://localhost:8083}
+    timeout: ${NOTIFICATIONS_TIMEOUT:2s}
 
 management:
   endpoints:
